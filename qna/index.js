@@ -49,6 +49,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(expressLayouts);
 app.use(express.static(path.join(__dirname, "public")));
 
+app.set('trust proxy', 1);
 app.use(
     session({
         secret: "SOME_SECRET_KEY",
@@ -60,10 +61,10 @@ app.use(
             collectionName: "sessions"
         }),
         cookie: {
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            sameSite: 'none',
             path: '/'
         },
         name: 'qna.sid',
