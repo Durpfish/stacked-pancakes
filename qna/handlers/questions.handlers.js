@@ -11,9 +11,13 @@ const {
 
 async function handleCreateQuestion(req, res) {
     try {
+        console.log('[CREATE_QUESTION] Starting question creation...');
         const { title, body, tags } = req.body;
         
+        console.log('[CREATE_QUESTION] Received data:', { title, body, tags });
+        
         if (!title || !body || !tags) {
+            console.log('[CREATE_QUESTION] Missing required fields');
             return res.render('error', {
                 message: 'Title, body, and tags are required fields'
             });
@@ -43,12 +47,14 @@ async function handleCreateQuestion(req, res) {
             });
         }
 
+        console.log('[CREATE_QUESTION] Creating question in database...');
         const questionId = await createQuestion(req.session.userId, title, body, tagArray);
+        console.log('[CREATE_QUESTION] Question created successfully with ID:', questionId);
         res.redirect(303, '/questions?success=Question created successfully!');
     } catch (error) {
         console.error('Error creating question:', error);
         // Redirect to questions list with an error message instead of showing error page
-        res.redirect('/questions?error=Failed to create question. Please try again.');
+        res.redirect(303, '/questions?error=Failed to create question. Please try again.');
     }
 }
 
@@ -278,7 +284,7 @@ async function handleUpdateQuestion(req, res) {
             });
         }
 
-        res.redirect(`/questions/${id}`);
+        res.redirect(303, `/questions/${id}`);
     } catch (error) {
         console.error("Error updating question:", error);
         res.render("questions/edit", {
