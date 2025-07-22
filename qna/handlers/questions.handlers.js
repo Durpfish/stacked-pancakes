@@ -11,26 +11,14 @@ const {
 
 async function handleCreateQuestion(req, res) {
     try {
-        console.log('[CREATE_QUESTION] Starting question creation...');
-        console.log('[CREATE_QUESTION] Session data:', {
-            sessionID: req.sessionID,
-            userId: req.session?.userId,
-            username: req.session?.username,
-            isAuthenticated: !!req.session?.userId
-        });
-        
         // Check authentication first
         if (!req.session?.userId) {
-            console.log('[CREATE_QUESTION] User not authenticated');
             return res.redirect(303, '/login?error=Please log in to create questions');
         }
         
         const { title, body, tags } = req.body;
         
-        console.log('[CREATE_QUESTION] Received data:', { title, body, tags });
-        
         if (!title || !body || !tags) {
-            console.log('[CREATE_QUESTION] Missing required fields');
             return res.render('error', {
                 message: 'Title, body, and tags are required fields'
             });
@@ -60,28 +48,20 @@ async function handleCreateQuestion(req, res) {
             });
         }
 
-        console.log('[CREATE_QUESTION] Creating question in database...');
         const questionId = await createQuestion(req.session.userId, title, body, tagArray);
-        console.log('[CREATE_QUESTION] Question created successfully with ID:', questionId);
         
         // Add a small delay to ensure database operation is fully committed
         await new Promise(resolve => setTimeout(resolve, 100));
         
         // Ensure the response hasn't been sent already
         if (!res.headersSent) {
-            console.log('[CREATE_QUESTION] Redirecting to questions list with success message');
             res.redirect(303, '/questions?success=Question created successfully!');
-        } else {
-            console.log('[CREATE_QUESTION] Response already sent, cannot redirect');
         }
     } catch (error) {
         console.error('Error creating question:', error);
         // Redirect to questions list with an error message instead of showing error page
         if (!res.headersSent) {
-            console.log('[CREATE_QUESTION] Redirecting to questions list with error message');
             res.redirect(303, '/questions?error=Failed to create question. Please try again.');
-        } else {
-            console.log('[CREATE_QUESTION] Response already sent, cannot redirect on error');
         }
     }
 }
@@ -126,6 +106,9 @@ async function handleListQuestions(req, res) {
     try {
         const result = await getQuestions(filter, sortQuery, page);
         
+        // Add a small delay to ensure database operations are stable
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
         const questionsPromises = result.questions.map(async (question) => {
             const author = await getUserById(question.userId);
             
@@ -162,19 +145,22 @@ async function handleListQuestions(req, res) {
             title = `Questions tagged '${tag}' - QnA`;
         }
 
-        res.render("questions/list", {
-            title: title,
-            layout: 'layout',
-            questions: questionsWithAuthors,
-            currentPage: result.currentPage,
-            totalPages: Math.ceil(result.total / 10),
-            sort,
-            tag,
-            query,
-            isMyQuestions: userId && userId === req.session.userId,
-            error: req.query.error, // Pass error message from query parameter
-            success: req.query.success // Pass success message from query parameter
-        });
+        // Ensure the response hasn't been sent already
+        if (!res.headersSent) {
+            res.render("questions/list", {
+                title: title,
+                layout: 'layout',
+                questions: questionsWithAuthors,
+                currentPage: result.currentPage,
+                totalPages: Math.ceil(result.total / 10),
+                sort,
+                tag,
+                query,
+                isMyQuestions: userId && userId === req.session.userId,
+                error: req.query.error, // Pass error message from query parameter
+                success: req.query.success // Pass success message from query parameter
+            });
+        }
     } catch (error) {
         console.error('Error loading questions:', error);
         res.render("error", {
@@ -223,23 +209,28 @@ async function handleViewQuestion(req, res) {
             })
         );
 
+        // Add a small delay to ensure database operations are stable
+        await new Promise(resolve => setTimeout(resolve, 50));
+
         // determine if current user is the author
         const isAuthor = userId && question.userId.toString() === userId.toString();
-        console.log(`[VIEW] Is current user the author? ${isAuthor} (User: ${userId}, Author: ${question.userId})`);
 
-        res.render("questions/view", {
-            title: `${question.title} - QnA`,
-            layout: 'layout',
-            question: {
-                ...question,
-                author: {
-                    username: author.username,
-                    profilePicture: author.profilePicture
-                }
-            },
-            answers: answersWithAuthors,
-            isAuthor: isAuthor
-        });
+        // Ensure the response hasn't been sent already
+        if (!res.headersSent) {
+            res.render("questions/view", {
+                title: `${question.title} - QnA`,
+                layout: 'layout',
+                question: {
+                    ...question,
+                    author: {
+                        username: author.username,
+                        profilePicture: author.profilePicture
+                    }
+                },
+                answers: answersWithAuthors,
+                isAuthor: isAuthor
+            });
+        }
     } catch (error) {
         console.error("[VIEW] Error loading question:", error);
         res.render("error", {
@@ -288,6 +279,11 @@ async function handleUpdateQuestion(req, res) {
     const { title, body, tags } = req.body;
 
     try {
+        // Check authentication first
+        if (!req.session?.userId) {
+            return res.redirect(303, '/login?error=Please log in to edit questions');
+        }
+
         const processedTags = tags && typeof tags === 'string' 
             ? tags.split(',').map(tag => tag.trim()).filter(tag => tag)
             : [];
@@ -297,6 +293,9 @@ async function handleUpdateQuestion(req, res) {
             body,
             tags: processedTags
         });
+
+        // Add a small delay to ensure database operation is fully committed
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         if (!success) {
             return res.render("questions/edit", {
@@ -312,22 +311,27 @@ async function handleUpdateQuestion(req, res) {
             });
         }
 
-        res.redirect(303, `/questions/${id}`);
+        // Ensure the response hasn't been sent already
+        if (!res.headersSent) {
+            res.redirect(303, `/questions/${id}`);
+        }
     } catch (error) {
-        console.error("Error updating question:", error);
-        res.render("questions/edit", {
-            title: "Edit Question - QnA",
-            layout: 'layout',
-            error: "Error updating question",
-            question: { 
-                _id: id, 
-                title, 
-                body, 
-                tags: tags && typeof tags === 'string' 
-                    ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) 
-                    : []
-            }
-        });
+        console.error('[UPDATE_QUESTION] Error updating question:', error);
+        if (!res.headersSent) {
+            res.render("questions/edit", {
+                title: "Edit Question - QnA",
+                layout: 'layout',
+                error: "Error updating question",
+                question: { 
+                    _id: id, 
+                    title, 
+                    body, 
+                    tags: tags && typeof tags === 'string' 
+                        ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) 
+                        : []
+                }
+            });
+        }
     }
 }
 
@@ -337,10 +341,7 @@ async function handleDeleteQuestion(req, res) {
     const isDeleteOverride = req.isDeleteOverride;
 
     try {
-        console.log(`[HANDLER] Attempting to delete question ${id} by user ${userId}`);
-        
         if (!userId) {
-            console.log(`[HANDLER] User not authenticated for delete operation`);
             return res.status(401).render("error", {
                 title: "Error - QnA",
                 message: "You must be logged in to delete questions."
@@ -353,9 +354,7 @@ async function handleDeleteQuestion(req, res) {
         const question = await getQuestionById(questionIdStr);
         
         if (!question) {
-            console.log(`[HANDLER] Question ${id} not found`);
             if (isDeleteOverride) {
-                console.log(`[HANDLER] Using delete override, redirecting to questions list`);
                 return res.redirect(303, "/questions?success=Question deleted successfully!");
             }
             return res.status(404).render("error", {
@@ -365,51 +364,52 @@ async function handleDeleteQuestion(req, res) {
         }
         
         const isAuthor = question.userId.toString() === userIdStr;
-        console.log(`[HANDLER] Is user the author? ${isAuthor}`);
         
         if (!isAuthor) {
-            console.log(`[HANDLER] User ${userIdStr} is not authorized to delete question ${questionIdStr}`);
             return res.status(403).render("error", {
                 title: "Error - QnA",
                 message: "You can only delete your own questions."
             });
         }
         
-        console.log(`[HANDLER] Calling deleteQuestion with questionId: ${questionIdStr}, userId: ${userIdStr}`);
         const success = await deleteQuestion(questionIdStr, userIdStr);
         
+        // Add a small delay to ensure database operation is fully committed
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         const checkQuestion = await getQuestionById(questionIdStr);
         if (!checkQuestion) {
-            console.log(`[HANDLER] Question ${id} was successfully deleted (verified)`);
-            console.log(`[HANDLER] Redirecting to /questions after successful deletion`);
-            return res.redirect(303, "/questions?success=Question deleted successfully!");
+            // Ensure the response hasn't been sent already
+            if (!res.headersSent) {
+                return res.redirect(303, "/questions?success=Question deleted successfully!");
+            }
         }
         
         if (!success) {
-            console.log(`[HANDLER] Failed to delete question ${id}`);
             return res.status(500).render("error", {
                 title: "Error - QnA",
                 message: "Failed to delete question. Please try again."
             });
         }
         
-        console.log(`[HANDLER] Successfully deleted question ${id}`);
-        
-
-        console.log(`[HANDLER] Redirecting to /questions after successful deletion`);
-        return res.redirect(303, "/questions?success=Question deleted successfully!");
+        // Ensure the response hasn't been sent already
+        if (!res.headersSent) {
+            return res.redirect(303, "/questions?success=Question deleted successfully!");
+        }
         
     } catch (error) {
         console.error('[HANDLER] Error deleting question:', error);
         if (isDeleteOverride) {
-            console.log(`[HANDLER] Error during delete, but using override, redirecting to questions list`);
-            return res.redirect(303, "/questions?success=Question deleted successfully!");
+            if (!res.headersSent) {
+                return res.redirect(303, "/questions?success=Question deleted successfully!");
+            }
         }
-        return res.status(500).render("error", {
-            title: "Error - QnA",
-            message: "An error occurred while deleting the question. Please try again."
-        });
+        if (!res.headersSent) {
+            return res.status(500).render("error", {
+                title: "Error - QnA",
+                message: "An error occurred while deleting the question. Please try again."
+            });
+        }
     }
 }
 

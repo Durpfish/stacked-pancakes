@@ -17,27 +17,13 @@ const port = 3000;
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// debugging middleware to log the method for each request
+// method override middleware
 app.use((req, res, next) => {
-    const originalUrl = req.originalUrl || req.url;
-    console.log(`[REQUEST] ${req.method} ${originalUrl}`);
-    
-    // log request body for debugging
-    if (req.body && Object.keys(req.body).length > 0) {
-        console.log(`[REQUEST] Body:`, JSON.stringify(req.body));
-    }
-    
-    // log method override
     if (req.body && req.body._method) {
-        console.log(`[REQUEST] Method override: ${req.body._method}`);
-        console.log(`[REQUEST] Original method was ${req.method}, will be processed as ${req.body._method}`);
+        req.originalHttpMethod = req.method;
     }
     
     if (req.method === 'DELETE' || (req.body && req.body._method === 'DELETE')) {
-        console.log(`[REQUEST] DELETE detected for path: ${originalUrl}`);
-        console.log(`[REQUEST] DELETE params:`, JSON.stringify(req.params));
-        console.log(`[REQUEST] DELETE query:`, JSON.stringify(req.query));
-        
         req.originalHttpMethod = req.method;
     }
     
@@ -85,19 +71,6 @@ app.use((req, res, next) => {
 
 // make common data available to all views
 app.use((req, res, next) => {
-    // Debug session information
-    console.log(`[SESSION DEBUG] Session ID: ${req.sessionID}`);
-    console.log(`[SESSION DEBUG] User ID in session: ${req.session?.userId}`);
-    console.log(`[SESSION DEBUG] Is authenticated: ${!!req.session?.userId}`);
-    console.log(`[SESSION DEBUG] Cookies:`, req.headers.cookie);
-    console.log(`[SESSION DEBUG] Session store:`, req.sessionStore ? 'MongoDB' : 'Memory');
-
-    if (req.originalUrl.includes('/questions') && req.method !== 'GET') {
-        console.log(`[SESSION] Session ID: ${req.sessionID}`);
-        console.log(`[SESSION] User ID in session: ${req.session?.userId}`);
-        console.log(`[SESSION] Is authenticated: ${!!req.session?.userId}`);
-        console.log(`[SESSION] Cookies:`, req.headers.cookie);
-    }
 
     res.locals.userId = req.session?.userId || null;
     res.locals.isAuthenticated = !!req.session?.userId;
