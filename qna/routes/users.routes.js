@@ -33,6 +33,11 @@ router.post("/users/profile/update", requireAuth, handleUpdateProfile); // Direc
 router.get("/profile", requireAuth, handleViewProfile); // Shortcut for current user's profile
 router.get("/profile/:userId", requireAuth, handleViewProfile); // Shortcut for specific user profile
 
+// Fallback POST handler for accidental POSTs to root
+router.post("/", (req, res) => {
+  res.redirect("/");
+});
+
 // About page
 router.get("/aboutus", async (req, res) => {
     try {
