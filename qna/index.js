@@ -63,7 +63,7 @@ app.use(
             secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             path: '/'
         },
         name: 'qna.sid',
@@ -84,6 +84,13 @@ app.use((req, res, next) => {
 
 // make common data available to all views
 app.use((req, res, next) => {
+    // Debug session information
+    console.log(`[SESSION DEBUG] Session ID: ${req.sessionID}`);
+    console.log(`[SESSION DEBUG] User ID in session: ${req.session?.userId}`);
+    console.log(`[SESSION DEBUG] Is authenticated: ${!!req.session?.userId}`);
+    console.log(`[SESSION DEBUG] Cookies:`, req.headers.cookie);
+    console.log(`[SESSION DEBUG] Session store:`, req.sessionStore ? 'MongoDB' : 'Memory');
+
     if (req.originalUrl.includes('/questions') && req.method !== 'GET') {
         console.log(`[SESSION] Session ID: ${req.sessionID}`);
         console.log(`[SESSION] User ID in session: ${req.session?.userId}`);

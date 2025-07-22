@@ -36,7 +36,18 @@ async function handleLogin(req, res) {
         req.session.username = foundUser.username;
         
         console.log(`[LOGIN] User ${username} logged in successfully, redirecting to: ${redirect}`);
-        res.redirect(redirect);
+        console.log(`[LOGIN] Session ID: ${req.sessionID}`);
+        console.log(`[LOGIN] Session data set:`, { userId: req.session.userId, username: req.session.username });
+        
+        // Save session explicitly
+        req.session.save((err) => {
+            if (err) {
+                console.error('[LOGIN] Error saving session:', err);
+            } else {
+                console.log('[LOGIN] Session saved successfully');
+            }
+            res.redirect(redirect);
+        });
     } else {
         res.render("login", {
             title: "Login - QnA",
