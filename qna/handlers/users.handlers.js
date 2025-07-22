@@ -46,7 +46,7 @@ async function handleLogin(req, res) {
             } else {
                 console.log('[LOGIN] Session saved successfully');
             }
-            res.redirect(redirect);
+            res.redirect(303, redirect);
         });
     } else {
         res.render("login", {
