@@ -52,13 +52,13 @@ router.post("/:id/delete", requireAuth, (req, res) => {
     handleDeleteQuestion(req, res).then(() => {
         if (!res.headersSent) {
             console.log("[ROUTES] Headers not sent, forcing redirect to questions list");
-            res.redirect("/questions");
+            res.redirect("/questions?success=Question deleted successfully!");
         }
     }).catch(err => {
         console.error("[ROUTES] Error in delete handler:", err);
         if (!res.headersSent) {
             console.log("[ROUTES] Error detected but redirecting to questions list anyway");
-            res.redirect("/questions");
+            res.redirect("/questions?error=Failed to delete question. Please try again.");
         }
     });
 });

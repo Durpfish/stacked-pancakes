@@ -44,12 +44,11 @@ async function handleCreateQuestion(req, res) {
         }
 
         const questionId = await createQuestion(req.session.userId, title, body, tagArray);
-        res.redirect(`/questions/${questionId}`);
+        res.redirect('/questions?success=Question created successfully!');
     } catch (error) {
         console.error('Error creating question:', error);
-        res.render('error', {
-            message: 'Error creating question. Please try again.'
-        });
+        // Redirect to questions list with an error message instead of showing error page
+        res.redirect('/questions?error=Failed to create question. Please try again.');
     }
 }
 
@@ -138,7 +137,9 @@ async function handleListQuestions(req, res) {
             sort,
             tag,
             query,
-            isMyQuestions: userId && userId === req.session.userId
+            isMyQuestions: userId && userId === req.session.userId,
+            error: req.query.error, // Pass error message from query parameter
+            success: req.query.success // Pass success message from query parameter
         });
     } catch (error) {
         console.error('Error loading questions:', error);
@@ -321,7 +322,7 @@ async function handleDeleteQuestion(req, res) {
             console.log(`[HANDLER] Question ${id} not found`);
             if (isDeleteOverride) {
                 console.log(`[HANDLER] Using delete override, redirecting to questions list`);
-                return res.redirect("/questions");
+                return res.redirect("/questions?success=Question deleted successfully!");
             }
             return res.status(404).render("error", {
                 title: "Error - QnA",
@@ -348,7 +349,7 @@ async function handleDeleteQuestion(req, res) {
         if (!checkQuestion) {
             console.log(`[HANDLER] Question ${id} was successfully deleted (verified)`);
             console.log(`[HANDLER] Redirecting to /questions after successful deletion`);
-            return res.redirect("/questions");
+            return res.redirect("/questions?success=Question deleted successfully!");
         }
         
         if (!success) {
@@ -363,13 +364,13 @@ async function handleDeleteQuestion(req, res) {
         
 
         console.log(`[HANDLER] Redirecting to /questions after successful deletion`);
-        return res.redirect("/questions");
+        return res.redirect("/questions?success=Question deleted successfully!");
         
     } catch (error) {
         console.error('[HANDLER] Error deleting question:', error);
         if (isDeleteOverride) {
             console.log(`[HANDLER] Error during delete, but using override, redirecting to questions list`);
-            return res.redirect("/questions");
+            return res.redirect("/questions?success=Question deleted successfully!");
         }
         return res.status(500).render("error", {
             title: "Error - QnA",
