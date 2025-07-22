@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title><%= title %></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <link rel="stylesheet" href="/assets/css/login.css" />
+</head>
+<body class="is-preload">
+    <div id="wrapper">
+        <div class="post">
+            <div class="login-header">
+                <div class="login-title">
+                    <h2>Login to Stacked Pancakes</h2>
+                </div>
+                <div>
+                    <img src="/assets/images/pancakes.png" alt="Stacked Pancakes Logo" class="login-logo">
+                </div>
+            </div>
+            <% if (locals.error) { %>
+                <div class="alert alert-danger">
+                    <%= error %>
+                </div>
+            <% } %>
+            <form method="POST" action="/sessions">
+                <% if (locals.redirect) { %>
+                    <input type="hidden" name="redirect" value="<%= redirect %>" />
+                <% } %>
+                <div class="row gtr-uniform">
+                    <div class="col-12">
+                        <input type="text" name="username" id="username" placeholder="Username" required />
+                    </div>
+                    <div class="col-12">
+                        <input type="password" name="password" id="password" placeholder="Password" required />
+                    </div>
+                    <div class="col-12">
+                        <ul class="actions">
+                            <li><input type="submit" value="Login" class="primary" /></li>
+                            <li><a href="/register<%= locals.redirect ? '?redirect=' + redirect : '' %>" class="button">Register</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </form>
+            <div class="col-12 text-center">
+                <p>Don't have an account? <a href="/register<%= locals.redirect ? '?redirect=' + redirect : '' %>">Register here</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

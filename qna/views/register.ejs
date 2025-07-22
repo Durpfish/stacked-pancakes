@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/register.css">
+</head>
+<body>
+    <div class="register-container">
+        <h1 class="form-header">Create an Account</h1>
+        
+        <% if (typeof error !== 'undefined') { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        
+        <div class="step-indicator">
+            <div class="step-dot active" data-step="1"></div>
+            <div class="step-dot" data-step="2"></div>
+            <div class="step-dot" data-step="3"></div>
+        </div>
+        
+        <form id="registration-form" action="/users" method="POST" enctype="multipart/form-data">
+            <!-- Step 1: Account Basics -->
+            <div class="step active" id="step-1">
+                <div class="step-title">Step 1: Account Information</div>
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required
+                           pattern="^[a-zA-Z0-9_]{3,20}$" 
+                           title="Username must be 3-20 characters and can only contain letters, numbers, and underscores">
+                    <div class="password-requirements">
+                        Username must be 3-20 characters and can only contain letters, numbers, and underscores.
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="password-requirements">
+                        Password should be at least 8 characters long.
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirmPassword" required>
+                </div>
+                
+                <div class="step-navigation">
+                    <div></div> 
+                    <button type="button" class="step-button next-button" data-step="1">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Profile Details -->
+            <div class="step" id="step-2">
+                <div class="step-title">Step 2: Profile Details</div>
+                
+                <div class="form-group">
+                    <label for="bio">Bio (optional)</label>
+                    <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profilePicture">Profile Picture (optional)</label>
+                    <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
+                    
+                    <div class="image-preview-container">
+                        <div class="profile-image-preview" id="image-preview">
+                            <span id="preview-text">Preview</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-navigation">
+                    <button type="button" class="step-button back-button" data-step="2">Back</button>
+                    <button type="button" class="step-button next-button" data-step="2">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Review & Submit -->
+            <div class="step" id="step-3">
+                <div class="step-title">Step 3: Review & Complete</div>
+                
+                <div class="summary-container">
+                    <h3>Registration Summary</h3>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Username:</span>
+                        <span id="summary-username"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Email:</span>
+                        <span id="summary-email"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Bio:</span>
+                        <span id="summary-bio">Not provided</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Profile Picture:</span>
+                        <span id="summary-picture">Not uploaded</span>
+                    </div>
+                </div>
+                
+                <div class="step-navigation">
+                    <button type="button" class="step-button back-button" data-step="3">Back</button>
+                    <button type="submit" class="register-button">Complete Registration</button>
+                </div>
+            </div>
+        </form>
+        
+        <div class="login-link">
+            Already have an account? <a href="/login">Login here</a>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Step navigation
+            const nextButtons = document.querySelectorAll('.next-button');
+            const backButtons = document.querySelectorAll('.back-button');
+            const steps = document.querySelectorAll('.step');
+            const stepDots = document.querySelectorAll('.step-dot');
+            
+            // Form validation
+            const form = document.getElementById('registration-form');
+            const username = document.getElementById('username');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirm-password');
+            
+            // Preview image
+            const profilePicture = document.getElementById('profilePicture');
+            const imagePreview = document.getElementById('image-preview');
+            const previewText = document.getElementById('preview-text');
+            
+            // Summary elements
+            const summaryUsername = document.getElementById('summary-username');
+            const summaryEmail = document.getElementById('summary-email');
+            const summaryBio = document.getElementById('summary-bio');
+            const summaryPicture = document.getElementById('summary-picture');
+            
+            // Handle next button clicks
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = parseInt(this.getAttribute('data-step'));
+                    
+                    if (currentStep === 1) {
+                        if (!validateStep1()) {
+                            return;
+                        }
+                    }
+                    
+                    if (currentStep === 2) {
+                        updateSummary();
+                    }
+                    
+                    document.getElementById(`step-${currentStep}`).classList.remove('active');
+
+                    document.getElementById(`step-${currentStep + 1}`).classList.add('active');
+
+                    stepDots[currentStep - 1].classList.remove('active');
+                    stepDots[currentStep].classList.add('active');
+                });
+            });
+            
+            backButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = parseInt(this.getAttribute('data-step'));
+    
+                    document.getElementById(`step-${currentStep}`).classList.remove('active');
+        
+                    document.getElementById(`step-${currentStep - 1}`).classList.add('active');
+                    
+                    stepDots[currentStep - 1].classList.remove('active');
+                    stepDots[currentStep - 2].classList.add('active');
+                });
+            });
+            
+            // Handle profile picture preview
+            profilePicture.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        imagePreview.style.backgroundImage = `url('${event.target.result}')`;
+                        previewText.style.display = 'none';
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            function validateStep1() {
+                if (!username.validity.valid) {
+                    alert('Please enter a valid username (3-20 characters, only letters, numbers, and underscores)');
+                    username.focus();
+                    return false;
+                }
+                
+                if (!email.validity.valid) {
+                    alert('Please enter a valid email address');
+                    email.focus();
+                    return false;
+                }
+                
+                if (password.value.length < 8) {
+                    alert('Password must be at least 8 characters long');
+                    password.focus();
+                    return false;
+                }
+                
+                if (password.value !== confirmPassword.value) {
+                    alert('Passwords do not match');
+                    confirmPassword.focus();
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            function updateSummary() {
+                summaryUsername.textContent = username.value;
+                summaryEmail.textContent = email.value;
+                
+                const bio = document.getElementById('bio').value;
+                if (bio.trim() !== '') {
+                    summaryBio.textContent = bio;
+                }
+                
+                if (profilePicture.files.length > 0) {
+                    summaryPicture.textContent = 'Uploaded';
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,141 @@
+/* Navbar */
+.site-logo {
+    height: 30px;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+#header h1 {
+    display: flex;
+    align-items: center;
+}
+
+#header h1 a {
+    display: inline-block;
+}
+
+/* Footer */
+#footer {
+    padding: 2em 0;
+    text-align: center;
+    margin-top: 2em;
+    border-top: 1px solid rgba(160, 160, 160, 0.3);
+    position: relative;
+    z-index: 10;
+}
+
+#footer .icons {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5em;
+    position: relative;
+    z-index: 20;
+}
+
+#footer .icons li {
+    margin: 0 0.5em;
+    position: relative;
+}
+
+#footer .icons a {
+    border-bottom: none;
+    font-size: 1.5em;
+    transition: color 0.2s ease;
+    display: inline-block;
+    position: relative;
+    z-index: 30;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+#footer .icons a:hover {
+    color: #3498db;
+}
+
+#footer .copyright {
+    color: #aaa;
+    font-size: 0.9em;
+}
+
+#footer .copyright a {
+    color: inherit;
+    border-bottom: 1px dotted rgba(160, 160, 160, 0.65);
+    pointer-events: auto !important;
+}
+
+#footer .copyright a:hover {
+    color: #3498db;
+    border-bottom-color: transparent;
+}
+
+/* Main Content Layout */
+#wrapper {
+    display: block !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+#main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 4.5em;
+    width: 90em;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+#main {
+    flex: 1;
+}
+
+/* Error Page Layout  */
+.error-container {
+    text-align: center;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 4rem auto;
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: #e74c3c;
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #2980b9;
+}
+
+/* Media Queries */
+@media screen and (max-width: 1680px) {
+    #main-content {
+        padding: 3em;
+    }
+}
+
+@media screen and (max-width: 736px) {
+    #main-content {
+        padding: 1.5em;
+    }
+} 

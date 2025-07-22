@@ -1,0 +1,150 @@
+/* Styles for the question view page */
+
+.question-full, .answer {
+  margin-bottom: 2em;
+}
+
+.question-full {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.question-full header {
+  margin-bottom: 1.5em;
+}
+
+.question-meta {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 0.5em;
+}
+
+.voting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 1em;
+  margin-right: 1em;
+  min-width: 50px;
+}
+
+.vote-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.vote-button:hover {
+  opacity: 1;
+}
+
+.vote-button.voted {
+  opacity: 1;
+  color: #3498db;
+}
+
+.vote-button svg {
+  fill: #666;
+  width: 100%;
+  height: 100%;
+}
+
+.vote-button:hover svg {
+  fill: #3498db;
+}
+
+.vote-button.voted svg {
+  fill: #3498db;
+}
+
+.vote-count {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 0.5em 0;
+  text-align: center;
+}
+
+.question-content, .answer-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.content {
+  flex: 1;
+}
+
+.body {
+  margin-bottom: 1.5em;
+  line-height: 1.6;
+}
+
+.tags {
+  margin-bottom: 1em;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.3em 0.8em;
+  background: #e1ecf4;
+  color: #39739d;
+  border-radius: 3px;
+  font-size: 0.8em;
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+  text-decoration: none;
+}
+
+.tag:hover {
+  background: #c9e1f6;
+}
+
+.question-actions, .answer-actions {
+  margin-top: 1em;
+}
+
+.button.small {
+  font-size: 0.8em;
+  padding: 0.3em 0.8em;
+  margin-right: 0.5em;
+}
+
+.answers h2 {
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #eee;
+}
+
+.post-answer {
+  margin-top: 2em;
+  padding-top: 2em;
+  border-top: 1px solid #eee;
+}
+
+.post-answer h3 {
+  margin-bottom: 1em;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 2em;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.actions {
+  margin-top: 1em;
+}
+
+.actions > span {
+  margin: 0 0.5em;
+} 

@@ -1,0 +1,101 @@
+/* Home page specific styles */
+
+
+.home-page .post {
+    background-color: rgba(255, 255, 255, 1.00);
+    margin-bottom: 1em;
+    padding: 1.5em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 4px;
+}
+
+/* Welcome banner styling */
+.home-page .post:first-child {
+    background-color: rgba(255, 255, 255, 1.00);
+    border-radius: 4px;
+    padding: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.home-page .post > header {
+    padding: 0;
+    margin-bottom: 1.5em;
+}
+
+.home-page .post > header .title h2 {
+    font-size: 1.5em;
+    margin: 0 0 0.5em 0;
+}
+
+.home-page .post > header .meta {
+    display: flex;
+    align-items: center;
+    margin-top: 1em;
+}
+
+.home-page .post footer {
+    margin-top: 1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.home-page .guest-actions {
+    margin-top: 1em;
+}
+
+.home-page .guest-actions p {
+    margin-bottom: 0.5em;
+}
+
+/* Recent questions section styling */
+.home-page section h3 {
+    font-size: 1.2em;
+    margin: 1.5em 0 1em 0;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #eee;
+}
+
+.home-page .mini-posts {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-page .mini-post {
+    background-color: rgba(255, 255, 255, 1.00);
+    padding: 1em;
+    margin-bottom: 1em;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.home-page .mini-post header h3 {
+    font-size: 1em;
+    margin: 0 0 0.5em 0;
+    padding: 0;
+    border: none;
+}
+
+.home-page .mini-post header time {
+    font-size: 0.8em;
+    color: #888;
+}
+
+.home-page .pagination {
+    display: flex;
+    justify-content: space-between;
+    margin: 2em 0;
+}
+
+/* Override any conflicting styles from questions-list.css */
+.home-page .post {
+    display: block !important;
+}
+
+.home-page .post > header {
+    display: block !important;
+}
+
+.home-page .post > header .title,
+.home-page .post > header .meta {
+    display: block !important;
+} 

@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+    <%- include('head', { title: title }) %>
+    <body class="is-preload <%= title === 'QnA - Home' ? 'main-page' : '' %>" <%= locals.userId ? `data-user-id="${locals.userId}"` : '' %>>
+        <!-- Wrapper -->
+        <div id="wrapper">
+            <%- include('navbar') %>
+
+            <!-- Main -->
+            <div id="main-content">
+                <div id="main">
+                    <%- body %>
+                </div>
+                
+                <!-- Footer -->
+                <%- include('footer') %>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/browser.min.js"></script>
+        <script src="/assets/js/breakpoints.min.js"></script>
+        <script src="/assets/js/util.js"></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

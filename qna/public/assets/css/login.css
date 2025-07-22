@@ -1,0 +1,25 @@
+.login-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.login-logo {
+    height: 80px;
+    width: auto;
+    margin-left: 1rem;
+}
+
+.login-title h2 {
+    margin: 0;
+}
+
+#wrapper {
+    padding: 4em;
+}
+
+.text-center {
+    margin-top: 2em; 
+    text-align: center;
+} 

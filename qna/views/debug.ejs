@@ -1,0 +1,51 @@
+<h1>Authentication Debug</h1>
+
+<div class="debug-container">
+    <h2>Session Information</h2>
+    <pre><%= JSON.stringify(auth, null, 2) %></pre>
+
+    <h2>Quick Status</h2>
+    <ul>
+        <li>Session ID: <%= auth.sessionID %></li>
+        <li>User ID: <%= auth.userId %></li>
+        <li>Username: <%= auth.username %></li>
+        <li>Is Authenticated: <%= auth.isAuthenticated ? 'Yes' : 'No' %></li>
+    </ul>
+
+    <h2>Instructions</h2>
+    <p>If "Is Authenticated" is showing as "No", you need to log in again. Try the following:</p>
+    <ol>
+        <li>Go to <a href="/login">Login Page</a></li>
+        <li>Clear your browser cookies</li>
+        <li>Login with your credentials</li>
+        <li>Try deleting the question again</li>
+    </ol>
+
+    <h2>Navigation</h2>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/questions">Questions</a></li>
+        <% if (auth.isAuthenticated) { %>
+            <li><a href="/logout">Logout</a></li>
+        <% } else { %>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+        <% } %>
+    </ul>
+</div>
+
+<style>
+.debug-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+pre {
+    background-color: #272822;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+</style> 

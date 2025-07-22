@@ -1,0 +1,75 @@
+<!-- Header -->
+<header id="header">
+    <h1>
+        <img src="/assets/images/pancakes.png" alt="Stacked Pancakes Logo" class="site-logo">
+        <a href="/">Stacked Pancakes</a>
+    </h1>
+    <nav class="links">
+        <ul>
+            <li><a href="/questions">All Questions</a></li>
+            <% if (locals.userId) { %>
+                <li><a href="/questions?userId=<%= userId %>">My Questions</a></li>
+                <li><a href="/questions/ask/new">Ask a Question</a></li>
+            <% } else { %>
+                <li><a href="/login?redirect=/questions/ask/new">Ask a Question</a></li>
+            <% } %>
+        </ul>
+    </nav>
+    <nav class="main">
+        <ul>
+            <li class="menu">
+                <a class="fa-bars" href="#menu">Menu</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Menu -->
+<section id="menu">
+    <!-- Links -->
+    <section>
+        <ul class="links">
+            <% if (locals.userId) { %>
+                <li>
+                    <a href="/profile">
+                        <h3>My Profile</h3>
+                        <p>View and edit your profile</p>
+                    </a>
+                </li>
+            <% } %>
+            <li>
+                <a href="/aboutus">
+                    <h3>About Us</h3>
+                    <p>Learn about our platform!</p>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Actions -->
+    <section>
+        <ul class="actions stacked">
+            <% if (!locals.userId) { %>
+                <li><a href="/login" class="button large fit">Log In</a></li>
+                <li><a href="/register" class="button large fit">Register</a></li>
+            <% } else { %>
+                <li>
+                    <a href="/logout?t=<%= Date.now() %>" class="button large fit" onclick="clearLocalStorageOnLogout()">Log Out</a>
+                    <script>
+                        function clearLocalStorageOnLogout() {
+                            // Clear any cached data that might be in local storage
+                            try {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                console.log('Browser storage cleared on logout');
+                            } catch (e) {
+                                console.error('Error clearing storage:', e);
+                            }
+                        }
+                    </script>
+                </li>
+            <% } %>
+        </ul>
+    </section>
+</section>
+  

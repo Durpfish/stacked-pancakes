@@ -1,0 +1,341 @@
+#main {
+    position: relative;
+    z-index: 1;
+}
+
+#main:before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background-image: url('/assets/images/background.png');
+    background-position: center;
+    background-attachment: fixed;
+    background-size: 50% auto; 
+    background-repeat: repeat;
+    opacity: 0.20; 
+}
+
+body:not(.main-page) .post, 
+body:not(.main-page) .mini-post, 
+.answer, .question-full {
+    background-color: rgba(255, 255, 255, 1.00);
+    margin-bottom: 1em;
+}
+
+.pagination {
+    background-color: transparent !important;
+}
+
+.pagination .button {
+    background-color: rgba(245, 245, 245, 0.7) !important;
+    backdrop-filter: blur(2px);
+    transition: background-color 0.2s ease;
+}
+
+.pagination .button:hover {
+    background-color: rgba(245, 245, 245, 0.9) !important;
+}
+
+body:not(.main-page) .button,
+body:not(.main-page) .answer .button,
+body:not(.main-page) .post-answer .button {
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    color: #3498db !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+body:not(.main-page) .button:hover,
+body:not(.main-page) .answer .button:hover,
+body:not(.main-page) .post-answer .button:hover {
+    background-color: #f8f8f8 !important;
+    color: #2980b9 !important;
+}
+
+.question-actions .button,
+.question-full .button,
+.answer .button {
+    height: auto !important;
+    line-height: normal !important;
+    padding: 0.6em 1.2em !important;
+}
+
+body:not(.main-page) .post-answer button[type="submit"],
+body:not(.main-page) .post-answer .primary,
+body:not(.main-page) button.primary,
+body:not(.main-page) .button.primary {
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    color: #3498db !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    opacity: 1 !important;
+}
+
+body:not(.main-page) .post-answer button[type="submit"]:hover,
+body:not(.main-page) .post-answer .primary:hover,
+body:not(.main-page) button.primary:hover,
+body:not(.main-page) .button.primary:hover {
+    background-color: #f8f8f8 !important;
+    color: #2980b9 !important;
+}
+
+/* Ensure answer boxes have solid white background */
+.answer-content {
+    background-color: #ffffff !important;
+    border-radius: 4px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    padding: 1em !important;
+}
+
+/* Make question content more readable */
+.question-content .body,
+.answer-content .body {
+    background-color: #ffffff !important;
+    padding: 1em !important;
+    border-radius: 4px !important;
+}
+
+/* Style form inputs with white background */
+textarea, input[type="text"], input[type="email"], input[type="password"] {
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+/* Add styling to voting buttons to ensure visibility */
+.vote-button {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 4px !important;
+}
+
+/* Add better spacing for question view page */
+.question-full {
+    padding: 2em !important;
+}
+
+.question-full header {
+    padding-left: 1.5em !important;
+    margin-bottom: 1.5em !important;
+}
+
+.question-full header h1 {
+    margin-bottom: 0.5em !important;
+}
+
+.question-full .question-meta {
+    margin-left: 0.2em !important;
+}
+
+.question-content {
+    padding-left: 1em !important;
+}
+
+.question-content .content {
+    margin-left: 0em !important; 
+    padding-right: 1em !important;
+}
+
+article.question-full .content div.tags {
+    margin-left: -2.00em !important;
+    margin-top: 3.0em !important;
+    position: relative !important;
+    display: block !important;
+    clear: both !important;
+    transform: translateX(-2.00em) !important;
+}
+
+article.question-full .content div.question-actions {
+    margin-left: -2.00em !important;
+    margin-top: 0.8em !important;
+    position: relative !important;
+    display: block !important;
+    clear: both !important;
+    transform: translateX(-2.00em) !important;
+}
+
+.question-actions .button {
+    margin-right: 0.3em !important;
+}
+
+.questions-list header h1,
+body.questions-page header h1 {
+    font-size: 2.5em !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5em !important;
+}
+
+.questions-list header .actions,
+body.questions-page header .actions {
+    margin-bottom: 2em !important;
+}
+
+.questions-list header,
+body.questions-page header {
+    margin-bottom: 2em !important;
+}
+
+body.questions-page article.post,
+body.questions-page .post,
+.questions-list article,
+.questions-list .post {
+    background-color: #ffffff !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+    padding: 1.5em !important;
+    margin-bottom: 1.5em !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+#header button,
+#header .search button,
+#header ul li.search button,
+#header form button[type="button"],
+#header form input[type="button"],
+#header form button[type="submit"],
+#header form input[type="submit"] {
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    color: #3498db !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    opacity: 1 !important;
+}
+
+#header button:hover,
+#header .search button:hover,
+#header ul li.search button:hover,
+#header form button[type="button"]:hover,
+#header form input[type="button"]:hover,
+#header form button[type="submit"]:hover,
+#header form input[type="submit"]:hover {
+    background-color: #f8f8f8 !important;
+    color: #2980b9 !important;
+}
+
+#header form input[type="text"],
+#header .search input[type="text"],
+#header input[type="search"],
+#header #search input {
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    opacity: 1 !important;
+}
+
+#header form,
+#header .search,
+#header form.search,
+#header ul li.search form,
+#header #search {
+    margin-top: 1em !important;
+}
+/* Improve vertical centering for question boxes in questions list */
+body.questions-page article.post,
+body.questions-page .post,
+.questions-list article,
+.questions-list .post {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.questions-list article > .content,
+.questions-list .post > .content,
+.questions-list article header,
+.questions-list .post header {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+.questions-list .post .meta,
+.questions-list article .meta {
+    margin-top: 0.5em !important;
+}
+
+.questions-list .post .title,
+.questions-list article .title {
+    margin-bottom: 0.5em !important;
+}
+
+.questions-list .post .title h2,
+.questions-list article .title h2 {
+    margin-top: 0 !important;
+    margin-bottom: 0.5em !important;
+}
+
+.questions-list .post footer,
+.questions-list article footer {
+    margin-top: 0.8em !important;
+}
+
+
+.questions-list .votes-answers,
+.questions-list .votes,
+.questions-list .answers {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-right: 1.5em !important;
+}
+
+.mission-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.mission-section .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 150px; 
+}
+
+.mission-section .content p {
+    margin: auto 0;
+    text-align: left; 
+}
+
+.post:nth-of-type(2) {
+    margin-top: 2em !important;
+}
+
+body:not(.main-page) .post header {
+    padding: 1.5em 2em !important;
+    margin-bottom: 1em !important;
+}
+
+body:not(.main-page) .post header h2 {
+    font-size: 1em !important;
+    color: #333 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+}
+
+body:not(.main-page) .post header h2:after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #3498db;
+    margin-top: 0.5em;
+}
+
+body:not(.main-page) .post .content {
+    padding: 0 2em 2em 2em !important;
+}
+
+@media (max-width: 768px) {  
+    body:not(.main-page) .post header {
+        padding: 1.2em 1.5em !important;
+    }
+    
+    body:not(.main-page) .post .content {
+        padding: 0 1.5em 1.5em 1.5em !important;
+    }
+}

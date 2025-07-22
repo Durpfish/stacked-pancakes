@@ -1,0 +1,137 @@
+<link rel="stylesheet" href="/assets/css/questions-list.css" type="text/css" />
+
+<header>
+    <h1>Questions</h1>
+    <div class="actions">
+        <a href="/questions/ask/new" class="button primary">Ask Question</a>
+    </div>
+</header>
+
+<!-- Search form -->
+<div class="search-container">
+    <form action="/questions" method="GET" class="search-form">
+        <input type="text" name="q" placeholder="Search questions by title or tag..." value="<%= query || '' %>" class="search-input">
+        <input type="hidden" name="sort" value="<%= sort %>">
+        <% if (tag) { %>
+            <input type="hidden" name="tag" value="<%= tag %>">
+        <% } %>
+        <button type="submit" class="search-button">Search</button>
+    </form>
+    
+    <div class="filter-controls">
+        <!-- Sort options - hidden on My Questions page -->
+        <% if (!locals.isMyQuestions) { %>
+        <div class="sort-options">
+            <span>Sort by: </span>
+            <a href="?<%= query ? 'q=' + query + '&' : '' %><%= tag ? 'tag=' + tag + '&' : '' %>sort=newest" class="<%= sort === 'newest' ? 'active' : '' %>">Newest</a>
+            <a href="?<%= query ? 'q=' + query + '&' : '' %><%= tag ? 'tag=' + tag + '&' : '' %>sort=votes" class="<%= sort === 'votes' ? 'active' : '' %>">Most Votes</a>
+        </div>
+        <% } %>
+        
+        <% if (tag) { %>
+            <div class="tag-filter">
+                <span>Filtered by tag: <strong><%= tag %></strong></span>
+                <a href="?<%= query ? 'q=' + query + '&' : '' %>sort=<%= sort %>" class="remove-tag">✕</a>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Questions List -->
+<% if (questions.length === 0) { %>
+    <div class="empty-state">
+        <h3>No questions found</h3>
+        <p>Try adjusting your search or filters, or ask a new question!</p>
+    </div>
+<% } else { %>
+    <div class="questions-list">
+        <% questions.forEach(question => { %>
+            <article class="question-card">
+                <div class="question-stats">
+                    <div class="stat">
+                        <span class="count"><%= question.votes?.up?.length - question.votes?.down?.length || 0 %></span>
+                        <span class="label">votes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="count"><%= question.answerCount || 0 %></span>
+                        <span class="label">answers</span>
+                    </div>
+                </div>
+                
+                <div class="question-summary">
+                    <h3 class="question-title">
+                        <a href="/questions/<%= question._id %>"><%= question.title %></a>
+                    </h3>
+                    
+                    <div class="question-excerpt">
+                        <%= question.body ? (question.body.length > 200 ? question.body.substring(0, 200) + '...' : question.body) : '' %>
+                    </div>
+                    
+                    <div class="question-meta">
+                        <div class="tags">
+                            <% (question.tags || []).forEach(tag => { %>
+                                <a href="/questions?tag=<%= tag %>" class="tag"><%= tag %></a>
+                            <% }) %>
+                        </div>
+                        
+                        <div class="author-info">
+                            asked <%= new Date(question.createdAt || Date.now()).toLocaleDateString() %> by
+                            <a href="/profile/<%= question.userId %>"><%= question.author?.username || 'Unknown User' %></a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        <% }) %>
+    </div>
+<% } %>
+
+<!-- Pagination -->
+<div class="pagination">
+    <% if (totalPages > 1) { %>
+        <div class="pagination-controls">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %><%= query ? '&q=' + query : '' %><%= tag ? '&tag=' + tag : '' %>&sort=<%= sort %>" class="pagination-button prev">Previous</a>
+            <% } else { %>
+                <span class="pagination-button prev disabled">Previous</span>
+            <% } %>
+            
+            <% 
+            // Determine page range to show
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            %>
+            
+            <% if (startPage > 1) { %>
+                <a href="?page=1<%= query ? '&q=' + query : '' %><%= tag ? '&tag=' + tag : '' %>&sort=<%= sort %>" class="pagination-button">1</a>
+                <% if (startPage > 2) { %>
+                    <span class="pagination-ellipsis">...</span>
+                <% } %>
+            <% } %>
+            
+            <% for (let i = startPage; i <= endPage; i++) { %>
+                <% if (i === currentPage) { %>
+                    <span class="pagination-button current"><%= i %></span>
+                <% } else { %>
+                    <a href="?page=<%= i %><%= query ? '&q=' + query : '' %><%= tag ? '&tag=' + tag : '' %>&sort=<%= sort %>" class="pagination-button"><%= i %></a>
+                <% } %>
+            <% } %>
+            
+            <% if (endPage < totalPages) { %>
+                <% if (endPage < totalPages - 1) { %>
+                    <span class="pagination-ellipsis">...</span>
+                <% } %>
+                <a href="?page=<%= totalPages %><%= query ? '&q=' + query : '' %><%= tag ? '&tag=' + tag : '' %>&sort=<%= sort %>" class="pagination-button"><%= totalPages %></a>
+            <% } %>
+            
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %><%= query ? '&q=' + query : '' %><%= tag ? '&tag=' + tag : '' %>&sort=<%= sort %>" class="pagination-button next">Next</a>
+            <% } else { %>
+                <span class="pagination-button next disabled">Next</span>
+            <% } %>
+        </div>
+    <% } %>
+</div> 

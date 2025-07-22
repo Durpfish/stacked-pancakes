@@ -1,0 +1,81 @@
+<link rel="stylesheet" href="/assets/css/profile.css" type="text/css" />
+
+<h1><%= profile.username %>'s Profile</h1>
+            
+<% if (typeof error !== 'undefined') { %>
+    <div class="error-message">
+        <%= error %>
+    </div>
+<% } %>
+
+<section class="profile-section">
+    <div class="profile-info">
+        <div class="profile-header">
+            <h1><%= profile.username %>'s Profile</h1>
+        </div>
+        <div class="profile-content">
+            <div class="profile-circle" data-bg-img="<%= profile.profilePicture || '/assets/images/default-avatar.png' %>"></div>
+            
+            <div class="profile-details">
+                <p><strong>Username:</strong> <%= profile.username %></p>
+                <p><strong>Email:</strong> <%= profile.email %></p>
+                <p><strong>Member since:</strong> <%= new Date(profile.createdAt).toLocaleDateString() %></p>
+                <p><strong>Bio:</strong> <%= profile.bio || 'No bio provided' %></p>
+            </div>
+        </div>
+    </div>
+
+    <% if (isOwnProfile) { %>
+        <div class="edit-profile">
+            <h2>Edit Profile</h2>
+            <form action="/users/profile/update" method="POST" enctype="multipart/form-data">
+                <div class="row gtr-uniform">
+                    <div class="col-6 col-12-xsmall">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" value="<%= profile.username %>" required 
+                               pattern="^[a-zA-Z0-9_]{3,20}$" 
+                               title="Username must be 3-20 characters and can only contain letters, numbers, and underscores">
+                        <small class="form-text">Username must be 3-20 characters and can only contain letters, numbers, and underscores.</small>
+                    </div>
+                    <div class="col-6 col-12-xsmall">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="<%= profile.email %>" required>
+                    </div>
+                    <div class="col-12">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio" rows="4"><%= profile.bio || '' %></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label for="profilePicture">Profile Picture</label>
+                        <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
+                        <small class="form-text">Max file size: 2MB. Recommended size: 200x200 pixels.</small>
+                    </div>
+                    <div class="col-6 col-12-xsmall">
+                        <label for="currentPassword">Current Password (required for changes)</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="col-6 col-12-xsmall">
+                        <label for="newPassword">New Password (optional)</label>
+                        <input type="password" id="newPassword" name="newPassword">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="primary">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    <% } %>
+</section>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileCircle = document.querySelector('.profile-circle');
+        if (profileCircle) {
+            const bgImg = profileCircle.getAttribute('data-bg-img');
+            if (bgImg) {
+                profileCircle.style.backgroundImage = `url('${bgImg}')`;
+            }
+        }
+    });
+</script> 

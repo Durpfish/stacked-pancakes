@@ -1,0 +1,106 @@
+<link rel="stylesheet" href="/assets/css/main-posts.css" type="text/css" />
+<script src="/assets/js/main-page.js"></script>
+
+<% if (currentPage === 1) { %>
+<!-- Welcome Message (Only shown on first page) -->
+<div class="post">
+    <header>
+        <div class="title">
+            <h2>Welcome, <%= userId ? (username || 'User') : 'Guest' %></h2>
+            <div class="actions">
+                <% if (locals.userId) { %>
+                    <a href="/questions/ask/new" class="button large">Ask a Question</a>
+                <% } else { %>
+                    <div class="guest-actions">
+                        <p>Join our community to ask questions and participate!</p>
+                        <a href="/register" class="button primary">Register</a>
+                        <a href="/login" class="button">Login</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </header>
+</div>
+<% } %>
+
+<% if (tag) { %>
+<!-- Tag Filter Indicator -->
+<div style="margin-bottom: 1.5em; padding: 0.5em; background: #f9f9f9; border-radius: 5px; display: flex; align-items: center;">
+    <span style="margin-right: 0.5em;">Filtered by tag:</span>
+    <span class="tag"><%= tag %></span>
+    <a href="?page=1" class="button small" style="margin-left: 0.5em;">Clear Filter</a>
+</div>
+<% } %>
+
+<!-- Questions (adapted from posts in template) -->
+<% questions.forEach(question => { %>
+    <article class="post">
+        <header>
+            <div class="title">
+                <h2><a href="/questions/<%= question._id %>"><%= question.title %></a></h2>
+                <p><%= question.body.substring(0, 150) %>...</p>
+            </div>
+            <div class="meta">
+                <time class="published" datetime="<%= question.createdAt %>">
+                    <%= new Date(question.createdAt).toLocaleDateString() %>
+                </time>
+                <a href="/profile/<%= question.userId %>" class="author">
+                    <span class="name"><%= question.author.username %></span>
+                    <span class="profile-circle-small" data-bg-img="<%= question.author.profilePicture || '/assets/images/default-avatar.png' %>"></span>
+                </a>
+            </div>
+        </header>
+        <footer>
+            <ul class="actions">
+                <li><a href="/questions/<%= question._id %>" class="button large">View Answers</a></li>
+            </ul>
+            <ul class="stats">
+                <% question.tags.forEach(tag => { %>
+                    <li><a href="/questions?tag=<%= tag %>"><%= tag %></a></li>
+                <% }); %>
+                <li>
+                    <a href="javascript:void(0)" class="vote-link icon solid fa-arrow-up"
+                       data-question-id="<%= question._id %>"
+                       data-user-logged-in="<%= userId ? 'true' : 'false' %>"
+                       title="Click to upvote this question">
+                        <%= question.votes?.up?.length || 0 %>
+                    </a>
+                </li>
+                <li><a href="/questions/<%= question._id %>" class="icon solid fa-comment" title="View answers"><%= question.answerCount || 0 %></a></li>
+            </ul>
+        </footer>
+    </article>
+<% }); %>
+
+<!-- Pagination -->
+<ul class="actions pagination">
+    <% if (currentPage > 1) { %>
+        <li><a href="?page=<%= currentPage - 1 %><%= tag ? '&tag=' + tag : '' %>" class="button large previous">Previous Page</a></li>
+    <% } else { %>
+        <li><a href="" class="disabled button large previous">Previous Page</a></li>
+    <% } %>
+    <% if (currentPage < totalPages) { %>
+        <li><a href="?page=<%= currentPage + 1 %><%= tag ? '&tag=' + tag : '' %>" class="button large next">Next Page</a></li>
+    <% } %>
+</ul>
+
+<!-- Recent Questions -->
+<section>
+    <h3>Recent Questions</h3>
+    <div class="mini-posts">
+        <% recentQuestions.forEach(question => { %>
+            <article class="mini-post">
+                <header>
+                    <h3><a href="/questions/<%= question._id %>"><%= question.title %></a></h3>
+                    <time class="published" datetime="<%= question.createdAt %>">
+                        <%= new Date(question.createdAt).toLocaleDateString() %>
+                    </time>
+                    <div class="meta">
+                        <span class="answers"><%= question.answerCount || 0 %> answers</span>
+                        <span class="votes"><%= question.votes?.up?.length - question.votes?.down?.length || 0 %> votes</span>
+                    </div>
+                </header>
+            </article>
+        <% }); %>
+    </div>
+</section> 

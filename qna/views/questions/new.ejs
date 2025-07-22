@@ -1,0 +1,36 @@
+<link rel="stylesheet" href="/assets/css/question-edit.css" type="text/css" />
+
+<h1>Ask a Question</h1>
+
+<% if (typeof error !== 'undefined') { %>
+    <div class="error-message">
+        <%= error %>
+    </div>
+<% } %>
+
+<section class="ask-question">
+    <form action="/questions" method="POST">
+        <div class="row gtr-uniform">
+            <div class="col-12">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" placeholder="Be specific and concise" required>
+            </div>
+            <div class="col-12">
+                <label for="body">Body</label>
+                <textarea id="body" name="body" rows="8" placeholder="Include all the details someone would need to answer your question" required></textarea>
+            </div>
+            <div class="col-12">
+                <label for="tags">Tags</label>
+                <input type="text" id="tags" name="tags" placeholder="Separate tags with commas (e.g. pancakes, shrimp, eggs)" 
+                       pattern=".+,.+|.+" title="Please enter at least one tag, separated by commas" required>
+                <small>Use tags to categorize your question (max 5). Tags can only contain letters, numbers, and hyphens.</small>
+            </div>
+            <div class="col-12">
+                <ul class="actions">
+                    <li><input type="submit" value="Post Question" class="primary" /></li>
+                    <li><a href="/questions" class="button">Cancel</a></li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</section> 
