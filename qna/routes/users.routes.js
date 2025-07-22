@@ -35,7 +35,7 @@ router.get("/profile/:userId", requireAuth, handleViewProfile); // Shortcut for 
 
 // Fallback POST handler for accidental POSTs to root
 router.post("/", (req, res) => {
-  res.redirect("/");
+  res.redirect(303, "/");
 });
 
 // About page
