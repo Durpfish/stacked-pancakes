@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
 const path = require("path");
+const MongoStore = require('connect-mongo');
 
 const userRoutes = require('./routes/users.routes');
 const questionRoutes = require('./routes/questions.routes');
@@ -51,10 +52,15 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
     session({
         secret: "SOME_SECRET_KEY",
-        resave: true,
-        saveUninitialized: true,
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGODB_URI,
+            dbName: "qna",
+            collectionName: "sessions"
+        }),
         cookie: {
-            secure: process.env.NODE_ENV === 'production', // true on Vercel, false locally
+            secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
             sameSite: 'lax',

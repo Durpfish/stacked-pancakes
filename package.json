@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "cloudinary": "^1.30.0",
+    "connect-mongo": "^5.1.0",
     "multer-storage-cloudinary": "^4.0.0"
   }
 }
