@@ -526,7 +526,8 @@ async function handleMainPage(req, res) {
             recentQuestions: [],
             currentPage: 1,
             totalPages: 1,
-            error: "Error loading questions"
+            error: "Error loading questions",
+            tag: null
         });
     }
 }
