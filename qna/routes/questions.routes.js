@@ -12,6 +12,7 @@ const {
 } = require('../handlers/questions.handlers');
 
 router.get("/ask/new", requireAuth, handleNewQuestionPage);
+router.get("/:id", handleViewQuestion);
 router.post("/", requireAuth, handleCreateQuestion);
 
 // Diagnostic route to check authentication status
@@ -61,7 +62,5 @@ router.post("/:id/delete", requireAuth, (req, res) => {
         }
     });
 });
-
-router.get("/:id", handleViewQuestion);
 
 module.exports = router; 
