@@ -10,45 +10,19 @@ const {
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../lib/cloudinary');
 
-// configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/uploads/profile');
-    },
-    filename: (req, file, cb) => {
-        const userId = req.session.userId;
-        const timestamp = Date.now();
-        const ext = path.extname(file.originalname).toLowerCase();
-        cb(null, `${userId}_${timestamp}${ext}`);
-    }
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'profile_pictures',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
+    transformation: [{ width: 300, height: 300, crop: 'limit' }]
+  }
 });
 
-// filter to only allow image files
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!allowedTypes.includes(file.mimetype)) {
-        return cb(new Error('Only JPG, PNG, GIF and WebP files are allowed!'), false);
-    }
-
-    const ext = path.extname(file.originalname).toLowerCase();
-    const allowedExt = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-    if (!allowedExt.includes(ext)) {
-        return cb(new Error('Invalid file extension!'), false);
-    }
-    
-    cb(null, true);
-};
-
-// create multer upload middleware
-const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: {
-        fileSize: 2 * 1024 * 1024 // 2MB limit
-    }
-});
-
+const upload = multer({ storage: storage });
 const uploadProfilePicture = upload.single('profilePicture');
 
 async function handleLogin(req, res) {
@@ -157,13 +131,10 @@ async function handleRegister(req, res) {
                 bio: bio || ''
             };
 
-            if (req.file) {
-                try {
-                    const profilePicturePath = `/uploads/profile/${req.file.filename}`;
-                    userData.profilePicture = profilePicturePath;
-                } catch (err) {
-                    console.error('Error processing profile picture:', err);
-                }
+            if (req.file && req.file.path) {
+                userData.profilePicture = req.file.path;
+            } else {
+                userData.profilePicture = "/assets/images/default-avatar.png";
             }
 
             const userId = await createUser(
@@ -363,11 +334,11 @@ async function handleUpdateProfile(req, res) {
 
         if (req.file) {
             try {
-                const profilePicturePath = `/uploads/profile/${req.file.filename}`;
+                const profilePicturePath = req.file.path;
                 updates.profilePicture = profilePicturePath;
                 
                 if (user.profilePicture && 
-                    user.profilePicture.startsWith('/uploads/profile/') && 
+                    user.profilePicture.startsWith('/assets/images/') && 
                     !user.profilePicture.includes('default-avatar')) {
                     const oldPicturePath = path.join('public', user.profilePicture);
                     if (fs.existsSync(oldPicturePath)) {
