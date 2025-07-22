@@ -516,8 +516,10 @@ async function handleMainPage(req, res) {
 
 function requireAuth(req, res, next) {
     console.log(`[AUTH] Checking auth for path: ${req.path}`);
+    console.log(`[AUTH] Session ID: ${req.sessionID}`);
     console.log(`[AUTH] Session:`, req.session);
     console.log(`[AUTH] User ID in session: ${req.session?.userId}`);
+    console.log(`[AUTH] Is authenticated: ${!!req.session?.userId}`);
     
     if (req.session && req.session.userId) {
         console.log(`[AUTH] User authenticated: ${req.session.userId}`);
@@ -525,7 +527,7 @@ function requireAuth(req, res, next) {
     } else {
         console.log(`[AUTH] Authentication failed, redirecting to login`);
         const redirectUrl = encodeURIComponent(req.originalUrl);
-        res.redirect(`/login?redirect=${redirectUrl}`);
+        res.redirect(303, `/login?redirect=${redirectUrl}`);
     }
 }
 

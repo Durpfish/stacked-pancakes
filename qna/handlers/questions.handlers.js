@@ -12,6 +12,19 @@ const {
 async function handleCreateQuestion(req, res) {
     try {
         console.log('[CREATE_QUESTION] Starting question creation...');
+        console.log('[CREATE_QUESTION] Session data:', {
+            sessionID: req.sessionID,
+            userId: req.session?.userId,
+            username: req.session?.username,
+            isAuthenticated: !!req.session?.userId
+        });
+        
+        // Check authentication first
+        if (!req.session?.userId) {
+            console.log('[CREATE_QUESTION] User not authenticated');
+            return res.redirect(303, '/login?error=Please log in to create questions');
+        }
+        
         const { title, body, tags } = req.body;
         
         console.log('[CREATE_QUESTION] Received data:', { title, body, tags });
@@ -50,11 +63,26 @@ async function handleCreateQuestion(req, res) {
         console.log('[CREATE_QUESTION] Creating question in database...');
         const questionId = await createQuestion(req.session.userId, title, body, tagArray);
         console.log('[CREATE_QUESTION] Question created successfully with ID:', questionId);
-        res.redirect(303, '/questions?success=Question created successfully!');
+        
+        // Add a small delay to ensure database operation is fully committed
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Ensure the response hasn't been sent already
+        if (!res.headersSent) {
+            console.log('[CREATE_QUESTION] Redirecting to questions list with success message');
+            res.redirect(303, '/questions?success=Question created successfully!');
+        } else {
+            console.log('[CREATE_QUESTION] Response already sent, cannot redirect');
+        }
     } catch (error) {
         console.error('Error creating question:', error);
         // Redirect to questions list with an error message instead of showing error page
-        res.redirect(303, '/questions?error=Failed to create question. Please try again.');
+        if (!res.headersSent) {
+            console.log('[CREATE_QUESTION] Redirecting to questions list with error message');
+            res.redirect(303, '/questions?error=Failed to create question. Please try again.');
+        } else {
+            console.log('[CREATE_QUESTION] Response already sent, cannot redirect on error');
+        }
     }
 }
 
