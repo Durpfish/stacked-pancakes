@@ -44,7 +44,7 @@ async function handleCreateQuestion(req, res) {
         }
 
         const questionId = await createQuestion(req.session.userId, title, body, tagArray);
-        res.redirect('/questions?success=Question created successfully!');
+        res.redirect(303, '/questions?success=Question created successfully!');
     } catch (error) {
         console.error('Error creating question:', error);
         // Redirect to questions list with an error message instead of showing error page
@@ -322,7 +322,7 @@ async function handleDeleteQuestion(req, res) {
             console.log(`[HANDLER] Question ${id} not found`);
             if (isDeleteOverride) {
                 console.log(`[HANDLER] Using delete override, redirecting to questions list`);
-                return res.redirect("/questions?success=Question deleted successfully!");
+                return res.redirect(303, "/questions?success=Question deleted successfully!");
             }
             return res.status(404).render("error", {
                 title: "Error - QnA",
@@ -349,7 +349,7 @@ async function handleDeleteQuestion(req, res) {
         if (!checkQuestion) {
             console.log(`[HANDLER] Question ${id} was successfully deleted (verified)`);
             console.log(`[HANDLER] Redirecting to /questions after successful deletion`);
-            return res.redirect("/questions?success=Question deleted successfully!");
+            return res.redirect(303, "/questions?success=Question deleted successfully!");
         }
         
         if (!success) {
@@ -364,13 +364,13 @@ async function handleDeleteQuestion(req, res) {
         
 
         console.log(`[HANDLER] Redirecting to /questions after successful deletion`);
-        return res.redirect("/questions?success=Question deleted successfully!");
+        return res.redirect(303, "/questions?success=Question deleted successfully!");
         
     } catch (error) {
         console.error('[HANDLER] Error deleting question:', error);
         if (isDeleteOverride) {
             console.log(`[HANDLER] Error during delete, but using override, redirecting to questions list`);
-            return res.redirect("/questions?success=Question deleted successfully!");
+            return res.redirect(303, "/questions?success=Question deleted successfully!");
         }
         return res.status(500).render("error", {
             title: "Error - QnA",
